@@ -29,10 +29,16 @@ jobs:
           git clone --depth=1 ${{ env.KERNEL_SOURCE }} -b ${{ env.KERNEL_SOURCE_BRANCH }} kernel-source
           echo "KERNEL_VERSION="$(cat kernel-source/arch/arm64/configs/${{ env.KERNEL_TARGET }}_defconfig | grep "CONFIG_LOCALVERSION\=" | sed -r 's/.*"(.+)".*/\1/' | sed 's/^.//')"" >> $GITHUB_ENV
 
+      - name: Settings up KernelSU
+        run: |
+          cd kernel-source
+          rm -rf KernelSU && rm -rf drivers/kernelsu
+          curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
+
       - name: Build kernel
         run: |
-          export KBUILD_BUILD_USER="xero"
-          export KBUILD_BUILD_HOST="builder"
+          export KBUILD_BUILD_USER=${{ env.BUILD_USER }}
+          export KBUILD_BUILD_HOST=${{ env.BUILD_HOST }}
           export PATH=$GITHUB_WORKSPACE/clang/bin:${PATH}
           args="                  ARCH=arm64 \
                                   O=../out \
@@ -40,7 +46,6 @@ jobs:
                                   CLANG_TRIPLE=aarch64-linux-gnu- \
                                   CROSS_COMPILE=$GITHUB_WORKSPACE/aarch64-linux-android-4.9/bin/aarch64-linux-android- "
                                   
-          cd kernel-source
           make ${args} ${{ env.KERNEL_TARGET }}_defconfig
           make -j$(($(getconf _NPROCESSORS_ONLN) * 2)) ${args}
 
