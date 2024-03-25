@@ -38,8 +38,8 @@ jobs:
           
       - name: Build kernel
         run: |
-          export KBUILD_BUILD_USER="${{ env.BUILD_USER }}"
-          export KBUILD_BUILD_HOST="${{ env.BUILD_HOST }}"
+          export KBUILD_BUILD_USER="xero"
+          export KBUILD_BUILD_HOST="builder"
           echo $KBUILD_BUILD_USER
           echo KBUILD_BUILD_HOST
           export PATH=$GITHUB_WORKSPACE/clang/bin:${PATH}
