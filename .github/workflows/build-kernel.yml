@@ -34,18 +34,21 @@ jobs:
           cd kernel-source
           rm -rf KernelSU && rm -rf drivers/kernelsu
           curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
-
+          cd ../
+          
       - name: Build kernel
         run: |
           export KBUILD_BUILD_USER="${{ env.BUILD_USER }}"
           export KBUILD_BUILD_HOST="${{ env.BUILD_HOST }}"
+          echo $KBUILD_BUILD_USER
+          echo KBUILD_BUILD_HOST
           export PATH=$GITHUB_WORKSPACE/clang/bin:${PATH}
           args="                  ARCH=arm64 \
                                   O=../out \
                                   ${{ env.BUILD_ARGS }} \
                                   CLANG_TRIPLE=aarch64-linux-gnu- \
                                   CROSS_COMPILE=$GITHUB_WORKSPACE/aarch64-linux-android-4.9/bin/aarch64-linux-android- "
-                                  
+          cd kernel-source                        
           make ${args} ${{ env.KERNEL_TARGET }}_defconfig
           make -j$(($(getconf _NPROCESSORS_ONLN) * 2)) ${args}
 
