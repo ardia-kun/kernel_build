@@ -33,7 +33,7 @@ jobs:
       - name: Build kernel
         run: |
           export KBUILD_BUILD_USER="kiddiez"
-          export KBUILD_BUILD_HOST="Swallow
+          export KBUILD_BUILD_HOST="Swallow"
           export PATH=$GITHUB_WORKSPACE/clang/bin:${PATH}
           args="                  ARCH=arm64 \
                                   O=../out \
